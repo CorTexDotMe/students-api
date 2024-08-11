@@ -21,10 +21,10 @@ class CourseRepositoryTest {
     @BeforeEach
     public void setUp() {
         course = Course.builder()
-                .name("Course Name. Find test")
-                .description("Course Description. Find test")
-                .credits(8)
-                .instructorName("Instructor Name. Find test")
+                .name("Introduction to Computer Science")
+                .description("Basic principles of computer science")
+                .credits(3)
+                .instructorName("Dr. Alice Johnson")
                 .build();
     }
 
@@ -43,6 +43,19 @@ class CourseRepositoryTest {
     public void findCourseByIdTest() {
         Course savedCourse = courseRepository.save(course);
         Course foundCourse = courseRepository.findById(savedCourse.getId()).orElse(null);
+
+        assertNotNull(foundCourse);
+        assertNotNull(foundCourse.getId());
+        assertEquals(savedCourse.getName(), foundCourse.getName());
+        assertEquals(savedCourse.getDescription(), foundCourse.getDescription());
+        assertEquals(savedCourse.getCredits(), foundCourse.getCredits());
+        assertEquals(savedCourse.getInstructorName(), foundCourse.getInstructorName());
+    }
+
+    @Test
+    public void findCourseByNameTest() {
+        Course savedCourse = courseRepository.save(course);
+        Course foundCourse = courseRepository.findByName(savedCourse.getName()).orElse(null);
 
         assertNotNull(foundCourse);
         assertNotNull(foundCourse.getId());

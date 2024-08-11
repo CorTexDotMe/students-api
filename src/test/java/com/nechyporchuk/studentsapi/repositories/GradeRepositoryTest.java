@@ -28,25 +28,28 @@ class GradeRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        student = new Student();
-        student.setFirstName("John");
-        student.setLastName("Doe");
-        student.setEmail("john.doe@example.com");
-        student.setPhoneNumber("123-456-7890");
-        student.setYearOfStudy(2);
+        student = Student.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .email("john.doe@example.com")
+                .phoneNumber("123-456-7890")
+                .yearOfStudy(2)
+                .build();
         student = studentRepository.save(student);
 
-        course = new Course();
-        course.setName("Introduction to Computer Science");
-        course.setDescription("Basic principles of computer science");
-        course.setCredits(3);
-        course.setInstructorName("Dr. Alice Johnson");
+        course = Course.builder()
+                .name("Introduction to Computer Science")
+                .description("Basic principles of computer science")
+                .credits(3)
+                .instructorName("Dr. Alice Johnson")
+                .build();
         course = courseRepository.save(course);
 
-        grade = new Grade();
-        grade.setGradeValue(85.5);
-        grade.setStudent(student);
-        grade.setCourse(course);
+        grade = Grade.builder()
+                .gradeValue(85.5)
+                .student(student)
+                .course(course)
+                .build();
     }
 
     @Test
@@ -54,7 +57,7 @@ class GradeRepositoryTest {
         Grade savedGrade = gradeRepository.save(grade);
 
         assertNotNull(savedGrade.getId());
-        assertEquals( grade.getGradeValue(), savedGrade.getGradeValue());
+        assertEquals(grade.getGradeValue(), savedGrade.getGradeValue());
         assertEquals(student, savedGrade.getStudent());
         assertEquals(course, savedGrade.getCourse());
     }
@@ -72,7 +75,28 @@ class GradeRepositoryTest {
     }
 
     @Test
-    public void getAllGradesTest() {
+    public void findAllGradesByStudentTest() {
+        Grade grade1 = new Grade();
+        grade1.setGradeValue(85.5);
+        grade1.setStudent(student);
+        grade1.setCourse(course);
+        gradeRepository.save(grade1);
+
+        Grade grade2 = new Grade();
+        grade2.setGradeValue(90.0);
+        grade2.setStudent(student);
+        grade2.setCourse(course);
+        gradeRepository.save(grade2);
+
+        List<Grade> grades = gradeRepository.findByStudentId(student.getId());
+
+        assertEquals(2, grades.size());
+        assertTrue(grades.contains(grade1));
+        assertTrue(grades.contains(grade2));
+    }
+
+    @Test
+    public void findAllGradesTest() {
         Grade grade1 = new Grade();
         grade1.setGradeValue(85.5);
         grade1.setStudent(student);

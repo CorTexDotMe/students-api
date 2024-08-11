@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
@@ -18,12 +20,13 @@ class StudentRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        student = new Student();
-        student.setFirstName("John");
-        student.setLastName("Doe");
-        student.setEmail("john.doe@example.com");
-        student.setPhoneNumber("123-456-7890");
-        student.setYearOfStudy(2);
+        student = Student.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .email("john.doe@example.com")
+                .phoneNumber("123-456-7890")
+                .yearOfStudy(2)
+                .build();
     }
 
     @Test
@@ -51,6 +54,33 @@ class StudentRepositoryTest {
         assertEquals(savedStudent.getEmail(), foundStudent.getEmail());
         assertEquals(savedStudent.getPhoneNumber(), foundStudent.getPhoneNumber());
         assertEquals(savedStudent.getYearOfStudy(), foundStudent.getYearOfStudy());
+    }
+
+    @Test
+    public void findAllStudentsTest() {
+        Student student1 = Student.builder()
+                .firstName("Sarah")
+                .lastName("Miller")
+                .email("sarah.miller@example.com")
+                .phoneNumber("567-890-1234")
+                .yearOfStudy(2)
+                .build();
+        studentRepository.save(student1);
+        
+        Student student2 = Student.builder()
+                .firstName("Michael")
+                .lastName("Brown")
+                .email("michael.brown@example.com")
+                .phoneNumber("456-789-0123")
+                .yearOfStudy(4)
+                .build();
+        studentRepository.save(student2);
+
+        List<Student> students = studentRepository.findAll();
+
+        assertEquals(2, students.size());
+        assertTrue(students.contains(student1));
+        assertTrue(students.contains(student2));
     }
 
     @Test
