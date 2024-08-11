@@ -3,6 +3,8 @@ package com.nechyporchuk.studentsapi.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,4 +29,7 @@ public class Course {
 
     @Column(name = "instructor_name")
     private String instructorName;
+
+    @OneToMany(mappedBy = "course")
+    private List<Grade> grades;
 }
