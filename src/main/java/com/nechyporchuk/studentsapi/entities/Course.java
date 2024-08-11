@@ -32,4 +32,16 @@ public class Course {
 
     @OneToMany(mappedBy = "course")
     private List<Grade> grades;
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Course course)) return false;
+        return id.equals(course.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
