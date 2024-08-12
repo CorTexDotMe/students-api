@@ -2,9 +2,10 @@ package com.nechyporchuk.studentsapi.controllers;
 
 import com.nechyporchuk.studentsapi.entities.Course;
 import com.nechyporchuk.studentsapi.entities.CourseDto;
+import com.nechyporchuk.studentsapi.exceptions.CourseNotFoundException;
 import com.nechyporchuk.studentsapi.mappers.CourseMapper;
 import com.nechyporchuk.studentsapi.repositories.CourseRepository;
-import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,9 @@ public class CourseController {
 
     @GetMapping("{id}")
     public CourseDto getCourseById(@PathVariable Long id) {
-        Course course = courseRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        Course course = courseRepository
+                .findById(id)
+                .orElseThrow(() -> new CourseNotFoundException(id));
         return courseMapper.toDto(course);
     }
 
@@ -36,20 +39,26 @@ public class CourseController {
     }
 
     @PostMapping
-    public CourseDto createCourse(@RequestBody CourseDto courseDto) {
+    public CourseDto createCourse(@Valid @RequestBody CourseDto courseDto) {
         Course course = courseMapper.toEntity(courseDto);
         return courseMapper.toDto(courseRepository.save(course));
     }
 
     @PutMapping
     public CourseDto updateCourse(@RequestBody CourseDto courseDto) {
-        Course course = courseRepository.findById(courseDto.id()).orElseThrow(EntityNotFoundException::new);
+        Course course = courseRepository
+                .findById(courseDto.id())
+                .orElseThrow(() -> new CourseNotFoundException(courseDto.id()));
         courseMapper.partialUpdate(courseDto, course);
         return courseMapper.toDto(courseRepository.save(course));
     }
 
     @DeleteMapping("{id}")
     public void deleteCourseById(@PathVariable Long id) {
-        courseRepository.deleteById(id);
+        if (courseRepository.existsById(id)) {
+            courseRepository.deleteById(id);
+        } else {
+            throw new CourseNotFoundException(id);
+        }
     }
 }

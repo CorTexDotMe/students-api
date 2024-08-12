@@ -1,6 +1,7 @@
 package com.nechyporchuk.studentsapi.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class Course {
     @Column(name = "course_id")
     private Long id;
 
+    @NotBlank(message = "Course name is mandatory")
     @Column(name = "course_name", nullable = false, unique = true)
     private String name;
 
