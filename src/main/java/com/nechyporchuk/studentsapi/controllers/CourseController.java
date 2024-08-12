@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/course")
+@RequestMapping("/courses")
 public class CourseController {
 
     private final CourseRepository courseRepository;
@@ -29,7 +29,7 @@ public class CourseController {
         return courseMapper.toDto(course);
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public List<CourseDto> getAll() {
         List<Course> courses = courseRepository.findAll();
         return courseMapper.listToDto(courses);
