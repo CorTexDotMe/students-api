@@ -8,6 +8,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,13 @@ class CourseControllerTest {
 
     @LocalServerPort
     public int serverPort;
+
+    @Value("${spring.security.user.name}")
+    private String username;
+
+    @Value("${spring.security.user.password}")
+    private String password;
+
 
     @Autowired
     private CourseRepository courseRepository;
@@ -53,6 +61,8 @@ class CourseControllerTest {
         course = courseRepository.save(course);
 
         given()
+                .auth()
+                .basic(username, password)
                 .when()
                 .get("/courses/" + course.getId())
                 .then()
@@ -66,6 +76,8 @@ class CourseControllerTest {
     @Test
     public void getCourseByNonExistentId() {
         given()
+                .auth()
+                .basic(username, password)
                 .when()
                 .get("/courses/" + 1000)
                 .then()
@@ -81,6 +93,8 @@ class CourseControllerTest {
         jsonAsMap.put("instructor_name", course.getInstructorName());
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -100,6 +114,8 @@ class CourseControllerTest {
 
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -117,6 +133,8 @@ class CourseControllerTest {
         jsonAsMap.put("instructorName", course.getInstructorName());
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -134,6 +152,8 @@ class CourseControllerTest {
         jsonAsMap.put("instructorName", course.getInstructorName());
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -153,6 +173,8 @@ class CourseControllerTest {
         jsonAsMap.put("instructorName", course.getInstructorName());
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -170,6 +192,8 @@ class CourseControllerTest {
         jsonAsMap.put("instructorName", course.getInstructorName());
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -188,6 +212,8 @@ class CourseControllerTest {
         jsonAsMap.put("name", newName);
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -205,6 +231,8 @@ class CourseControllerTest {
 
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -220,6 +248,8 @@ class CourseControllerTest {
         assertTrue(courseRepository.existsById(course.getId()));
 
         given()
+                .auth()
+                .basic(username, password)
                 .when()
                 .delete("/courses/" + course.getId())
                 .then()
@@ -231,6 +261,8 @@ class CourseControllerTest {
     @Test
     public void deleteCourseByNonExistentId() {
         given()
+                .auth()
+                .basic(username, password)
                 .when()
                 .delete("/courses/" + 1000)
                 .then()

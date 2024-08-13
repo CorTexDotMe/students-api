@@ -12,6 +12,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
@@ -24,12 +25,17 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class GradeControllerTest {
 
     @LocalServerPort
     public int serverPort;
+
+    @Value("${spring.security.user.name}")
+    private String username;
+
+    @Value("${spring.security.user.password}")
+    private String password;
 
     @Autowired
     private GradeRepository gradeRepository;
@@ -82,6 +88,10 @@ class GradeControllerTest {
         grade = gradeRepository.save(grade);
 
         given()
+                .auth()
+                .basic(username, password)
+                .auth()
+                .basic(username, password)
                 .when()
                 .get("/grades/" + grade.getId())
                 .then()
@@ -92,6 +102,8 @@ class GradeControllerTest {
     @Test
     public void getGradeByNonExistentId() {
         given()
+                .auth()
+                .basic(username, password)
                 .when()
                 .get("/grades/" + 1000)
                 .then()
@@ -106,6 +118,8 @@ class GradeControllerTest {
         jsonAsMap.put("grade_value", grade.getGradeValue());
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -122,6 +136,8 @@ class GradeControllerTest {
         jsonAsMap.put("grade_value", grade.getGradeValue());
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -137,6 +153,8 @@ class GradeControllerTest {
         jsonAsMap.put("grade_value", grade.getGradeValue());
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -152,6 +170,8 @@ class GradeControllerTest {
         jsonAsMap.put("course_name", grade.getCourse().getName());
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -168,6 +188,8 @@ class GradeControllerTest {
         jsonAsMap.put("grade_value", grade.getGradeValue());
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -184,6 +206,8 @@ class GradeControllerTest {
         jsonAsMap.put("grade_value", -1);
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -200,6 +224,8 @@ class GradeControllerTest {
         jsonAsMap.put("grade_value", 101);
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -218,6 +244,8 @@ class GradeControllerTest {
         jsonAsMap.put("grade_value", newGradeValue);
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -234,6 +262,8 @@ class GradeControllerTest {
         jsonAsMap.put("grade_value", grade.getGradeValue());
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -249,6 +279,8 @@ class GradeControllerTest {
         assertTrue(gradeRepository.existsById(grade.getId()));
 
         given()
+                .auth()
+                .basic(username, password)
                 .when()
                 .delete("/grades/" + grade.getId())
                 .then()
@@ -260,6 +292,8 @@ class GradeControllerTest {
     @Test
     public void deleteGradeByNonExistentId() {
         given()
+                .auth()
+                .basic(username, password)
                 .when()
                 .delete("/grades/" + 1000)
                 .then()

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,13 @@ class StudentControllerTest {
 
     @LocalServerPort
     public int serverPort;
+
+    @Value("${spring.security.user.name}")
+    private String username;
+
+    @Value("${spring.security.user.password}")
+    private String password;
+
 
     @Autowired
     private StudentRepository studentRepository;
@@ -54,6 +62,8 @@ class StudentControllerTest {
         student = studentRepository.save(student);
 
         given()
+                .auth()
+                .basic(username, password)
                 .when()
                 .get("/students/" + student.getId())
                 .then()
@@ -68,6 +78,8 @@ class StudentControllerTest {
     @Test
     public void getStudentByNonExistentId() {
         given()
+                .auth()
+                .basic(username, password)
                 .when()
                 .get("/students/" + 1000)
                 .then()
@@ -84,6 +96,8 @@ class StudentControllerTest {
         jsonAsMap.put("year_of_study", student.getYearOfStudy());
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -105,6 +119,8 @@ class StudentControllerTest {
         jsonAsMap.put("email", student.getEmail());
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -125,6 +141,8 @@ class StudentControllerTest {
         jsonAsMap.put("year_of_study", student.getYearOfStudy());
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -142,6 +160,8 @@ class StudentControllerTest {
         jsonAsMap.put("year_of_study", student.getYearOfStudy());
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -159,6 +179,8 @@ class StudentControllerTest {
         jsonAsMap.put("year_of_study", student.getYearOfStudy());
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -176,6 +198,8 @@ class StudentControllerTest {
         jsonAsMap.put("year_of_study", student.getYearOfStudy());
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -193,6 +217,8 @@ class StudentControllerTest {
         jsonAsMap.put("year_of_study", student.getYearOfStudy());
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -211,6 +237,8 @@ class StudentControllerTest {
         jsonAsMap.put("year_of_study", student.getYearOfStudy());
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -231,6 +259,8 @@ class StudentControllerTest {
         jsonAsMap.put("year_of_study", student.getYearOfStudy());
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -249,6 +279,8 @@ class StudentControllerTest {
         jsonAsMap.put("year_of_study", -1);
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -271,6 +303,8 @@ class StudentControllerTest {
         jsonAsMap.put("email", newEmail);
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -291,6 +325,8 @@ class StudentControllerTest {
         jsonAsMap.put("email", student.getEmail());
 
         given()
+                .auth()
+                .basic(username, password)
                 .contentType(ContentType.JSON)
                 .body(jsonAsMap)
                 .when()
@@ -306,6 +342,8 @@ class StudentControllerTest {
         assertTrue(studentRepository.existsById(student.getId()));
 
         given()
+                .auth()
+                .basic(username, password)
                 .when()
                 .delete("/students/" + student.getId())
                 .then()
@@ -317,6 +355,8 @@ class StudentControllerTest {
     @Test
     public void deleteStudentByNonExistentId() {
         given()
+                .auth()
+                .basic(username, password)
                 .when()
                 .delete("/students/" + 1000)
                 .then()
