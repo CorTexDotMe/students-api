@@ -57,7 +57,12 @@ class StudentControllerTest {
                 .when()
                 .get("/students/" + student.getId())
                 .then()
-                .statusCode(HttpStatus.OK.value());
+                .statusCode(HttpStatus.OK.value())
+                .body("first_name", equalTo(student.getFirstName()))
+                .body("last_name", equalTo(student.getLastName()))
+                .body("email", equalTo(student.getEmail()))
+                .body("phone_number", equalTo(student.getPhoneNumber()))
+                .body("year_of_study", equalTo(student.getYearOfStudy()));
     }
 
     @Test

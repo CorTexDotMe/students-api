@@ -56,7 +56,11 @@ class CourseControllerTest {
                 .when()
                 .get("/courses/" + course.getId())
                 .then()
-                .statusCode(HttpStatus.OK.value());
+                .statusCode(HttpStatus.OK.value())
+                .body("name", equalTo(course.getName()))
+                .body("description", equalTo(course.getDescription()))
+                .body("credits", equalTo(course.getCredits()))
+                .body("instructor_name", equalTo(course.getInstructorName()));
     }
 
     @Test
