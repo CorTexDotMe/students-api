@@ -6,6 +6,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
@@ -15,7 +17,9 @@ public class SecurityConfig {
                 .csrf(csrf ->
                         csrf.disable())
                 .authorizeHttpRequests(auth ->
-                        auth.anyRequest().permitAll());
+//                        auth.anyRequest().permitAll())
+                        auth.anyRequest().authenticated())
+                .httpBasic(withDefaults());
 
         return http.build();
     }
