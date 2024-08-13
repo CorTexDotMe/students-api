@@ -1,6 +1,8 @@
 package com.nechyporchuk.studentsapi.controllers;
 
 import com.nechyporchuk.studentsapi.exceptions.CourseNotFoundException;
+import com.nechyporchuk.studentsapi.exceptions.GradeNotFoundException;
+import com.nechyporchuk.studentsapi.exceptions.StudentNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,35 +27,38 @@ public class GlobalExceptionHandler {
             fieldErrors.put(fieldName, errorMessage);
         });
 
-        Map<String, Object> errorsResponse = new HashMap<>();
-        errorsResponse.put("timestamp", new Date());
-        errorsResponse.put("status", HttpStatus.BAD_REQUEST.value());
-        errorsResponse.put("errors", fieldErrors);
-
-        return new ResponseEntity<>(errorsResponse, HttpStatus.BAD_REQUEST);
+        return handleException(HttpStatus.BAD_REQUEST, fieldErrors);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Map<String, Object>> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
-        Map<String, Object> errorResponse = new HashMap<>();
-
         String errorMessage = "Some fields have constraints(Unique, primary or foreign key). You failed to follow them";
-        errorResponse.put("timestamp", new Date());
-        errorResponse.put("status", HttpStatus.CONFLICT.value());
-        errorResponse.put("error", errorMessage);
+        return handleException(HttpStatus.CONFLICT, errorMessage);
 
-        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(CourseNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleCourseNotFoundException(CourseNotFoundException ex) {
-        Map<String, Object> errorResponse = new HashMap<>();
-        errorResponse.put("timestamp", new Date());
-        errorResponse.put("status", HttpStatus.NOT_FOUND.value());
-        errorResponse.put("error", ex.getMessage());
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        return handleException(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
+    @ExceptionHandler(StudentNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleStudentNotFoundException(StudentNotFoundException ex) {
+        return handleException(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    @ExceptionHandler(GradeNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleGradeNotFoundException(GradeNotFoundException ex) {
+        return handleException(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    private ResponseEntity<Map<String, Object>> handleException(HttpStatus status, Object message) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("timestamp", new Date());
+        errorResponse.put("status", status.value());
+        errorResponse.put("error", message);
+
+        return new ResponseEntity<>(errorResponse, status);
+    }
 
 }
