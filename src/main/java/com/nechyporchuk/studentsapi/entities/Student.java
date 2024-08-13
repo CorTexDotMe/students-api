@@ -1,6 +1,9 @@
 package com.nechyporchuk.studentsapi.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
 import java.util.List;
@@ -18,18 +21,23 @@ public class Student {
     @Column(name = "student_id")
     private Long id;
 
+    @NotBlank(message = "Student first name is mandatory")
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
+    @NotBlank(message = "Student last name is mandatory")
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
+    @Email(message = "Invalid email address")
+    @NotBlank(message = "Student email is mandatory")
     @Column(nullable = false, unique = true)
     private String email;
 
     @Column(name = "phone_number")
     private String phoneNumber;
 
+    @PositiveOrZero(message = "Student year of study has to be positive number")
     @Column(name = "year_of_study")
     private int yearOfStudy;
 

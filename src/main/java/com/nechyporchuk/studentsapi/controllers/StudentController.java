@@ -2,9 +2,10 @@ package com.nechyporchuk.studentsapi.controllers;
 
 import com.nechyporchuk.studentsapi.entities.Student;
 import com.nechyporchuk.studentsapi.entities.StudentDto;
+import com.nechyporchuk.studentsapi.exceptions.StudentNotFoundException;
 import com.nechyporchuk.studentsapi.mappers.StudentMapper;
 import com.nechyporchuk.studentsapi.repositories.StudentRepository;
-import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,9 @@ public class StudentController {
 
     @GetMapping("{id}")
     public StudentDto getStudentById(@PathVariable Long id) {
-        Student student = studentRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        Student student = studentRepository
+                .findById(id)
+                .orElseThrow(() -> new StudentNotFoundException(id));
         return studentMapper.toDto(student);
     }
 
@@ -36,20 +39,26 @@ public class StudentController {
     }
 
     @PostMapping
-    public StudentDto createStudent(@RequestBody StudentDto studentDto) {
+    public StudentDto createStudent(@Valid @RequestBody StudentDto studentDto) {
         Student student = studentMapper.toEntity(studentDto);
         return studentMapper.toDto(studentRepository.save(student));
     }
 
     @PutMapping
     public StudentDto updateStudent(@RequestBody StudentDto studentDto) {
-        Student student = studentRepository.findById(studentDto.id()).orElseThrow(EntityNotFoundException::new);
+        Student student = studentRepository
+                .findById(studentDto.id())
+                .orElseThrow(() -> new StudentNotFoundException(studentDto.id()));
         studentMapper.partialUpdate(studentDto, student);
         return studentMapper.toDto(studentRepository.save(student));
     }
 
     @DeleteMapping("{id}")
     public void deleteStudentById(@PathVariable Long id) {
-        studentRepository.deleteById(id);
+        if (studentRepository.existsById(id)) {
+            studentRepository.deleteById(id);
+        } else {
+            throw new StudentNotFoundException(id);
+        }
     }
 }
