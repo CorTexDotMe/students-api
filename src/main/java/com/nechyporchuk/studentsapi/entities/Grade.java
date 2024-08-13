@@ -1,6 +1,9 @@
 package com.nechyporchuk.studentsapi.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Builder
@@ -24,8 +27,11 @@ public class Grade {
     @JoinColumn(name = "student_id")
     private Student student;
 
+    @Min(0)
+    @Max(100)
+    @NotNull(message = "Grade value is mandatory")
     @Column(name = "grade_value")
-    private double gradeValue;
+    private Double gradeValue;
 
     @Override
     public final boolean equals(Object o) {

@@ -2,6 +2,7 @@ package com.nechyporchuk.studentsapi.mappers;
 
 import com.nechyporchuk.studentsapi.entities.Grade;
 import com.nechyporchuk.studentsapi.entities.GradeDto;
+import com.nechyporchuk.studentsapi.entities.GradeSaveDto;
 import org.mapstruct.*;
 
 import java.util.List;
@@ -15,5 +16,5 @@ public interface GradeMapper {
     List<GradeDto> listToDto(List<Grade> grades);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Grade partialUpdate(GradeDto gradeDto, @MappingTarget Grade grade);
+    Grade partialUpdate(GradeSaveDto gradeDto, @MappingTarget Grade grade);
 }

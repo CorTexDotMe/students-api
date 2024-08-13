@@ -1,11 +1,14 @@
 package com.nechyporchuk.studentsapi.controllers;
 
 import com.nechyporchuk.studentsapi.entities.*;
+import com.nechyporchuk.studentsapi.exceptions.CourseNotFoundException;
+import com.nechyporchuk.studentsapi.exceptions.GradeNotFoundException;
+import com.nechyporchuk.studentsapi.exceptions.StudentNotFoundException;
 import com.nechyporchuk.studentsapi.mappers.GradeMapper;
 import com.nechyporchuk.studentsapi.repositories.CourseRepository;
 import com.nechyporchuk.studentsapi.repositories.GradeRepository;
 import com.nechyporchuk.studentsapi.repositories.StudentRepository;
-import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +37,9 @@ public class GradeController {
 
     @GetMapping("{id}")
     public GradeDto getGradeById(@PathVariable Long id) {
-        Grade grade = gradeRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        Grade grade = gradeRepository
+                .findById(id)
+                .orElseThrow(() -> new GradeNotFoundException(id));
         return gradeMapper.toDto(grade);
     }
 
@@ -51,9 +56,13 @@ public class GradeController {
     }
 
     @PostMapping
-    public GradeDto createGrade(@RequestBody GradeCreateDto gradeDto) {
-        Student student = studentRepository.findById(gradeDto.studentId()).orElseThrow(EntityNotFoundException::new);
-        Course course = courseRepository.findByName(gradeDto.courseName()).orElseThrow(EntityNotFoundException::new);
+    public GradeDto createGrade(@Valid @RequestBody GradeSaveDto gradeDto) {
+        Student student = studentRepository
+                .findById(gradeDto.studentId())
+                .orElseThrow(() -> new StudentNotFoundException(gradeDto.studentId()));
+        Course course = courseRepository
+                .findByName(gradeDto.courseName())
+                .orElseThrow(() -> new CourseNotFoundException("Course not found with name: " + gradeDto.courseName()));
 
         Grade grade = Grade.builder()
                 .student(student)
@@ -64,15 +73,21 @@ public class GradeController {
     }
 
     @PutMapping
-    public GradeDto updateGrade(@RequestBody GradeDto gradeDto) {
-        Grade grade = gradeRepository.findById(gradeDto.id()).orElseThrow(EntityNotFoundException::new);
+    public GradeDto updateGrade(@RequestBody GradeSaveDto gradeDto) {
+        Grade grade = gradeRepository
+                .findById(gradeDto.id())
+                .orElseThrow(() -> new GradeNotFoundException(gradeDto.id()));
         gradeMapper.partialUpdate(gradeDto, grade);
         return gradeMapper.toDto(gradeRepository.save(grade));
     }
 
     @DeleteMapping("{id}")
     public void deleteGradeById(@PathVariable Long id) {
-        gradeRepository.deleteById(id);
+        if (gradeRepository.existsById(id)) {
+            gradeRepository.deleteById(id);
+        } else {
+            throw new GradeNotFoundException(id);
+        }
     }
 
     @GetMapping("/average/{student_id}")
