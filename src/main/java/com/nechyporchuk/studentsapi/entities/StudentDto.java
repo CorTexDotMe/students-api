@@ -3,7 +3,7 @@ package com.nechyporchuk.studentsapi.entities;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Positive;
 
 import java.io.Serializable;
 
@@ -13,11 +13,11 @@ import java.io.Serializable;
 public record StudentDto(
         Long id,
 
-        @NotBlank(message = "Student first name is mandatory")
+        @NotBlank(message = "Student first_name is mandatory")
         @JsonProperty("first_name")
         String firstName,
 
-        @NotBlank(message = "Student last name is mandatory")
+        @NotBlank(message = "Student last_name is mandatory")
         @JsonProperty("last_name")
         String lastName,
 
@@ -28,8 +28,8 @@ public record StudentDto(
         @JsonProperty("phone_number")
         String phoneNumber,
 
-        @PositiveOrZero(message = "Student year of study has to be positive number")
+        @Positive(message = "Student year_of_study has to be a positive number")
         @JsonProperty("year_of_study")
-        int yearOfStudy
+        Integer yearOfStudy
 ) implements Serializable {
 }

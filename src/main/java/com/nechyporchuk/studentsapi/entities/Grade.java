@@ -27,9 +27,9 @@ public class Grade {
     @JoinColumn(name = "student_id")
     private Student student;
 
-    @Min(0)
-    @Max(100)
-    @NotNull(message = "Grade value is mandatory")
+    @Min(value = 0, message = "Field grade_value must be greater than or equal to 0")
+    @Max(value = 100, message = "Field grade_value must be less than or equal to 100")
+    @NotNull(message = "Field grade_value is mandatory")
     @Column(name = "grade_value")
     private Double gradeValue;
 

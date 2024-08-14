@@ -8,13 +8,19 @@ import com.nechyporchuk.studentsapi.mappers.GradeMapper;
 import com.nechyporchuk.studentsapi.repositories.CourseRepository;
 import com.nechyporchuk.studentsapi.repositories.GradeRepository;
 import com.nechyporchuk.studentsapi.repositories.StudentRepository;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
+import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/grades")
@@ -22,15 +28,17 @@ public class GradeController {
 
     private final GradeRepository gradeRepository;
     private final GradeMapper gradeMapper;
+    private final Validator validator;
 
     private final CourseRepository courseRepository;
     private final StudentRepository studentRepository;
 
     @Autowired
-    public GradeController(GradeRepository gradeRepository, GradeMapper gradeMapper,
+    public GradeController(GradeRepository gradeRepository, GradeMapper gradeMapper, Validator validator,
                            CourseRepository courseRepository, StudentRepository studentRepository) {
         this.gradeRepository = gradeRepository;
         this.gradeMapper = gradeMapper;
+        this.validator = validator;
         this.courseRepository = courseRepository;
         this.studentRepository = studentRepository;
     }
@@ -74,10 +82,19 @@ public class GradeController {
 
     @PutMapping
     public GradeDto updateGrade(@RequestBody GradeSaveDto gradeDto) {
+        if (gradeDto.id() == null) {
+            throw new GradeNotFoundException("Invalid grade id");
+        }
         Grade grade = gradeRepository
                 .findById(gradeDto.id())
                 .orElseThrow(() -> new GradeNotFoundException(gradeDto.id()));
         gradeMapper.partialUpdate(gradeDto, grade);
+
+        Set<ConstraintViolation<Grade>> validationResult = validator.validate(grade);
+        if (!validationResult.isEmpty()) {
+            throw new ConstraintViolationException(validationResult);
+        }
+
         return gradeMapper.toDto(gradeRepository.save(grade));
     }
 
@@ -91,8 +108,12 @@ public class GradeController {
     }
 
     @GetMapping("/average/{student_id}")
-    public ResponseEntity<Double> averageGrade(@PathVariable Long student_id) {
+    public ResponseEntity<Map<String, Object>> averageGrade(@PathVariable Long student_id) {
         Double averageGrade = gradeRepository.averageGradeByStudent(student_id);
-        return new ResponseEntity<>(averageGrade, HttpStatus.OK);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("average", averageGrade);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

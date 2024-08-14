@@ -2,6 +2,7 @@ package com.nechyporchuk.studentsapi.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 import java.util.List;
@@ -26,8 +27,9 @@ public class Course {
     @Column(name = "description")
     private String description;
 
+    @Positive(message = "Course credits has to be a positive number")
     @Column(name = "credits")
-    private int credits;
+    private Integer credits;
 
     @Column(name = "instructor_name")
     private String instructorName;

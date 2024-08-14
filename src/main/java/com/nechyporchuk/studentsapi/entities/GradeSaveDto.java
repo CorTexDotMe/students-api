@@ -12,16 +12,16 @@ public record GradeSaveDto(
         Long id,
 
         @JsonProperty("student_id")
-        @NotNull(message = "Student id is mandatory")
+        @NotNull(message = "Field student_id is mandatory")
         Long studentId,
 
-        @NotBlank(message = "Course name is mandatory")
+        @NotBlank(message = "Field course_name is mandatory")
         @JsonProperty("course_name")
         String courseName,
 
-        @Min(0)
-        @Max(100)
-        @NotNull(message = "Grade value is mandatory")
+        @Min(value = 0, message = "Field grade_value must be greater than or equal to 0")
+        @Max(value = 100, message = "Field grade_value must be less than or equal to 100")
+        @NotNull(message = "Field grade_value is mandatory")
         @JsonProperty("grade_value")
         Double gradeValue
 ) implements Serializable {

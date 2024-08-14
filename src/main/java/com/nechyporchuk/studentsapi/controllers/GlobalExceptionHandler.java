@@ -3,6 +3,8 @@ package com.nechyporchuk.studentsapi.controllers;
 import com.nechyporchuk.studentsapi.exceptions.CourseNotFoundException;
 import com.nechyporchuk.studentsapi.exceptions.GradeNotFoundException;
 import com.nechyporchuk.studentsapi.exceptions.StudentNotFoundException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @ControllerAdvice
@@ -35,6 +38,12 @@ public class GlobalExceptionHandler {
         String errorMessage = "Some fields have constraints(Unique, primary or foreign key). You failed to follow them";
         return handleException(HttpStatus.CONFLICT, errorMessage);
 
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Map<String, Object>> handleConstraintViolationException(ConstraintViolationException ex) {
+        List<String> fieldErrors = ex.getConstraintViolations().stream().map(ConstraintViolation::getMessage).toList();
+        return handleException(HttpStatus.BAD_REQUEST, fieldErrors);
     }
 
     @ExceptionHandler(CourseNotFoundException.class)

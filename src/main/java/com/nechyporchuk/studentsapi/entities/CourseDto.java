@@ -2,7 +2,7 @@ package com.nechyporchuk.studentsapi.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Positive;
 
 import java.io.Serializable;
 
@@ -17,8 +17,8 @@ public record CourseDto(
 
         String description,
 
-        @PositiveOrZero
-        int credits,
+        @Positive(message = "Course credits has to be a positive number")
+        Integer credits,
 
         @JsonProperty("instructor_name")
         String instructorName
