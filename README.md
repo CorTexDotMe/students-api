@@ -39,7 +39,7 @@ The application will be accessible at http://localhost:8080.
 ## Details
 
 There are 3 main entities: Course, Student, and Grade.
-To work with them you should use paths "/courses", "/students", and "grades"
+To work with them you should use paths "/courses", "/students", and "/grades"
 
 An SQL database was used for this project. The database is stored on file. The path to the database and its name
 can be configured in the src/main/resources/application.properties file.
@@ -51,9 +51,9 @@ Default credentials are stored in the src/main/resources/application.properties 
 
 This project is thoroughly tested to cover the main logic. Right now there are more than 60 tests.
 
-### API
+## API
 
-#### Courses
+### Courses
 
 **Get course by id**
 
@@ -100,7 +100,7 @@ This project is thoroughly tested to cover the main logic. Right now there are m
     - "id" (Long): The ID of the course to delete.
 - Response: None.
 
-#### Students
+### Students
 
 **Get student by id**
 
@@ -149,7 +149,7 @@ This project is thoroughly tested to cover the main logic. Right now there are m
     - "id" (Long): The ID of the student to delete.
 - Response: None.
 
-#### Grades
+### Grades
 
 **Get grade by id**
 
